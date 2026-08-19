@@ -1,0 +1,78 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Project Specific
+weights/*.pth
+weights/*.pt
+weights/*.onnx
+weights/*.h5
+*.pkl
+*.pb
+
+# Results
+results/
+outputs/
+logs/
+*.log
+
+# Data
+data/
+datasets/
+*.mp4
+*.avi
+*.mov
+*.jpg
+*.jpeg
+*.png
+*.npy
+
+# Streamlit
+.streamlit/secrets.toml
+.streamlit/config.toml
+*.streamlit
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*.ipynb
+
+# Misc
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.tmp
+Thumbs.db
