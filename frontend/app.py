@@ -5,18 +5,32 @@ Streamlit application for real-time face anti-spoofing detection.
 """
 
 import streamlit as st
-import cv2
-import numpy as np
-from PIL import Image
-import time
-from datetime import datetime
-import os
 import sys
+import os
 
 # =============================================================
 # إضافة المسارات
 # =============================================================
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# =============================================================
+# استيراد OpenCV مع معالجة الأخطاء
+# =============================================================
+try:
+    import cv2
+    OPENCV_AVAILABLE = True
+except ImportError as e:
+    st.error(f"⚠️ OpenCV غير متوفر: {str(e)}")
+    st.info("جاري محاولة تثبيت OpenCV...")
+    import subprocess
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "opencv-python==4.8.1.78"])
+    import cv2
+    OPENCV_AVAILABLE = True
+
+import numpy as np
+from PIL import Image
+import time
+from datetime import datetime
 
 from frontend.config import config
 from frontend.api.client import APIClient
@@ -26,7 +40,6 @@ from frontend.components.model_selector import ModelSelector
 from frontend.components.camera_view import CameraView
 from frontend.components.result_view import ResultView
 from frontend.components.heatmap_view import HeatmapView
-from frontend.utils.visualization import VisualizationUtils
 
 # =============================================================
 # Page Configuration
@@ -122,7 +135,7 @@ def init_session_state():
         st.session_state.fps = 0
     
     if "demo_mode" not in st.session_state:
-        st.session_state.demo_mode = False
+        st.session_state.demo_mode = True  # Demo mode enabled by default
 
 
 # =============================================================
@@ -281,22 +294,28 @@ def render_main():
             
             # Generate demo frames
             if st.session_state.is_running:
-                frame = generate_demo_frame()
-                if frame is not None:
-                    frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                    placeholder.image(frame_rgb, channels="RGB", use_container_width=True)
-                    process_frame(frame)
+                try:
+                    frame = generate_demo_frame()
+                    if frame is not None:
+                        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                        placeholder.image(frame_rgb, channels="RGB", use_container_width=True)
+                        process_frame(frame)
+                except Exception as e:
+                    placeholder.error(f"⚠️ خطأ في وضع العرض: {str(e)}")
             else:
                 placeholder.info("⏳ وضع العرض متوقف")
         else:
             # Camera mode
-            camera_view = CameraView()
-            frame = camera_view.render(
-                camera=st.session_state.camera,
-                is_running=st.session_state.is_running
-            )
-            if frame is not None:
-                process_frame(frame)
+            try:
+                camera_view = CameraView()
+                frame = camera_view.render(
+                    camera=st.session_state.camera,
+                    is_running=st.session_state.is_running
+                )
+                if frame is not None:
+                    process_frame(frame)
+            except Exception as e:
+                st.error(f"⚠️ خطأ في الكاميرا: {str(e)}")
     
     with col2:
         # Results
