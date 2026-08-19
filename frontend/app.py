@@ -16,16 +16,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # =============================================================
 # استيراد OpenCV مع معالجة الأخطاء
 # =============================================================
-try:
-    import cv2
-    OPENCV_AVAILABLE = True
-except ImportError as e:
-    st.error(f"⚠️ OpenCV غير متوفر: {str(e)}")
-    st.info("جاري محاولة تثبيت OpenCV...")
-    import subprocess
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "opencv-python==4.8.1.78"])
-    import cv2
-    OPENCV_AVAILABLE = True
+import cv2
 
 import numpy as np
 from PIL import Image
